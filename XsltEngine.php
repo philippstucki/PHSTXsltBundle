@@ -78,7 +78,7 @@ class XsltEngine implements EngineInterface
      */
     public function supports($name)
     {
-        return $this->parser->parse($name)->get('engine') === 'xsl';
+        return $this->parse($name)->get('engine') === 'xsl';
     }
 
     /**
