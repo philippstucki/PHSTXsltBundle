@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+
+    <parameters>
+        <parameter key="templating.engine.xslt.class">PS\Bundle\XsltBundle\XsltEngine</parameter>
+    </parameters>
+
+    <services>
+
+        <service id="templating.engine.xslt" class="%templating.engine.xslt.class%">
+            <argument type="service" id="templating.name_parser" />
+            <argument type="service" id="templating.loader" />
+            <argument type="service" id="templating.globals" />
+        </service>
+
+    </services>
+
+</container>

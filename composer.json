@@ -1,0 +1,45 @@
+{
+    "name": "ps/xslt-bundle",
+    "type": "symfony-bundle",
+    "description": "Adds XSLT as a symfony templating engine.",
+    "keywords": ["templating", "xslt", "symfony"],
+    "homepage": "http://stuckistucki.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Philipp Stucki",
+            "email": "ps@stuckistucki.com",
+            "homepage": "http://stuckistucki.com"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/philippstucki/PSXsltBundle/contributors"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/philippstucki/PSXsltBundle/issues"
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/framework-bundle": "2.1.*",
+        "smarty/smarty": "3.1.*@stable"
+    },
+    "require-dev": {
+        "symfony/security": "2.1.*",
+        "symfony/yaml": "2.1.*",
+        "symfony/assetic-bundle": ">=2.0"
+    },
+    "suggest": {
+        "symfony/assetic-bundle": "Assetic support in XSLT templates"
+    },
+    "autoload": {
+        "psr-0": { "PS\\Bundle\\XsltBundle": "" }
+    },
+    "target-dir": "PS/Bundle/XsltBundle",
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
+        }
+    }
+}
