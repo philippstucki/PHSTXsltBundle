@@ -5,6 +5,7 @@ namespace PS\Bundle\XsltBundle\Tests;
 use PS\Bundle\XsltBundle\XsltEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
+use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables;
@@ -61,9 +62,14 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         return new XsltEngine($parser, $loader);
     }
 
-    public function testParse()
+    public function testSupports()
     {
-        $parser = $this->getParserMock();
+        $loader = $this->getLoaderMock();
+        $parser = new TemplateNameParser();
+
+        $engine = new XsltEngine($parser, $loader);
+        $this->assertTrue($engine->supports('BundleNS:ControllerNS:index.html.xsl'), '->supports() returns true when queried for xsl template');
+        $this->assertFalse($engine->supports('BundleNS:ControllerNS:index.html.twig'), '->supports() returns false when queried for other template');
     }
 
     public function testLoadTemplateDoesNotExists()
