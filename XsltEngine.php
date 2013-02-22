@@ -51,8 +51,6 @@ class XsltEngine implements EngineInterface
     {
         $template = $this->parse($name);
         $xsltDom = $this->load($template);
-        var_dump($xsltDom->saveXML());
-        die;
     }
 
     /**
@@ -66,7 +64,14 @@ class XsltEngine implements EngineInterface
      */
     public function exists($name)
     {
-        d();
+        try {
+            $template = $this->parse($name);
+            $this->load($template);
+        } catch (\InvalidArgumentException $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -84,19 +89,19 @@ class XsltEngine implements EngineInterface
     /**
      * Renders a view and returns a Response.
      *
-     * @param string   $view       The view name
+     * @param string   $name       The view name
      * @param array    $parameters An array of parameters to pass to the view
      * @param Response $response   A Response instance
      *
      * @return Response A Response instance
      */
-    public function renderResponse($view, array $parameters = array(), Response $response = null)
+    public function renderResponse($name, array $parameters = array(), Response $response = null)
     {
         if (null === $response) {
             $response = new Response();
         }
 
-        $response->setContent($this->render($view, $parameters));
+        $response->setContent($this->render($name, $parameters));
 
         return $response;
     }

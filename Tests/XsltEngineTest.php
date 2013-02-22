@@ -49,11 +49,10 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    protected function getEngineForStorageTest($storage)
+    protected function getEngine($storage)
     {
         $loader = $this->getLoaderMock();
         $parser = $this->getParserMock();
-        $fileStorage = $this->getFileStorageMock();
 
         $loader->expects($this->any())
             ->method('load')
@@ -66,10 +65,38 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->getLoaderMock();
         $parser = new TemplateNameParser();
-
         $engine = new XsltEngine($parser, $loader);
+
         $this->assertTrue($engine->supports('BundleNS:ControllerNS:index.html.xsl'), '->supports() returns true when queried for xsl template');
         $this->assertFalse($engine->supports('BundleNS:ControllerNS:index.html.twig'), '->supports() returns false when queried for other template');
+    }
+
+    public function testExists()
+    {
+        $loader = $this->getLoaderMock();
+        $loader->expects($this->once())
+            ->method('load')
+            ->will($this->returnValue(false));
+        $parser = new TemplateNameParser();
+        $engine = new XsltEngine($parser, $loader);
+
+        $this->assertFalse($engine->exists('BundleNS:ControllerNS:index.html.xsl'));
+    }
+
+    public function testRenderResponse()
+    {
+        $engine = $this->getMockBuilder('PS\Bundle\XsltBundle\XsltEngine')
+            ->setMethods(array('render'))
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $engine->expects($this->once())
+            ->method('render')
+            ->will($this->returnValue('Rendered Response'));
+
+        $response = $engine->renderResponse('BundleNS:ControllerNS:index.html.xsl');
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response, '->renderResponse() creates a Response instance if none has been passed');
+        $this->assertEquals('Rendered Response', $response->getContent());
     }
 
     public function testLoadTemplateDoesNotExists()
@@ -78,7 +105,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $parser = $this->getParserMock();
         $template = $this->getTemplateMock();
 
-        $loader->expects($this->any())
+        $loader->expects($this->once())
             ->method('load')
             ->will($this->returnValue(false));
 
@@ -87,7 +114,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $engine->load($template);
     }
 
-    public function testLoadFileStorage()
+    public function testLoadFromFileStorage()
     {
         $template = $this->getTemplateMock();
         $fileStorage = $this->getFileStorageMock();
@@ -95,13 +122,13 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
             ->method('__toString')
             ->will($this->returnValue(self::$fixturesPath.'/xsl/empty.xsl'));
 
-        $engine = $this->getEngineForStorageTest($fileStorage);
+        $engine = $this->getEngine($fileStorage);
         $dom = $engine->load($template);
         $this->assertInstanceOf('\DomDocument', $dom, '->load() returns a DomDocument when loading from valid file');
     }
 
 
-    public function testLoadStringStorage()
+    public function testLoadFromStringStorage()
     {
         $template = $this->getTemplateMock();
         $stringStorage = $this->getStringStorageMock();
@@ -109,7 +136,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
             ->method('__toString')
             ->will($this->returnValue(file_get_contents(self::$fixturesPath.'/xsl/empty.xsl')));
 
-        $engine = $this->getEngineForStorageTest($stringStorage);
+        $engine = $this->getEngine($stringStorage);
         $dom = $engine->load($template);
         $this->assertInstanceOf('\DomDocument', $dom, '->load() returns a DomDocument when loading from valid string');
     }
