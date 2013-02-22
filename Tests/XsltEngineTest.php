@@ -99,6 +99,19 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Rendered Response', $response->getContent());
     }
 
+    public function testLoadInvalid()
+    {
+        $template = $this->getTemplateMock();
+        $fileStorage = $this->getFileStorageMock();
+        $fileStorage->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue(self::$fixturesPath.'/xsl/invalid.xsl'));
+        $engine = $this->getEngine($fileStorage);
+
+        $this->setExpectedException('InvalidArgumentException');
+        $dom = $engine->load($template);
+    }
+
     public function testLoadTemplateDoesNotExists()
     {
         $loader = $this->getLoaderMock();
