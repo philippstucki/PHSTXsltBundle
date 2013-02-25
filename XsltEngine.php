@@ -167,8 +167,7 @@ class XsltEngine implements EngineInterface
 
     public function serializeParameters($parameters)
     {
-        $serializer = SerializerBuilder::create()
-            ->build();
+        $serializer = SerializerBuilder::create()->build();
         $xml = $serializer->serialize($parameters, 'xml');
 
         self::startLibXmlErrorHandler();
