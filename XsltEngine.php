@@ -11,6 +11,8 @@ use Symfony\Component\Templating\Storage\FileStorage;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\XmlSerializationVisitor;
 
 class XsltEngine implements EngineInterface
 {
@@ -18,6 +20,9 @@ class XsltEngine implements EngineInterface
     protected $parser;
     protected $loader;
     protected $globals;
+
+    protected static $internalErrors;
+    protected static $disableEntities;
     
     /**
      * Constructor.
@@ -50,7 +55,12 @@ class XsltEngine implements EngineInterface
     public function render($name, array $parameters = array())
     {
         $template = $this->parse($name);
-        $xsltDom = $this->load($template);
+        $xsltDoc = $this->load($template);
+
+        $xslProc = new \XSLTProcessor();
+        $xslProc->importStylesheet($xsltDoc);
+        $dataDoc = $this->serializeParameters($parameters);
+        return $xslProc->transformToXML($dataDoc);
     }
 
     /**
@@ -138,14 +148,71 @@ class XsltEngine implements EngineInterface
             throw new \InvalidArgumentException(sprintf('The template "%s" does not exist.', $template->getLogicalName()));
         }
 
-        $xsltDom = new \DomDocument();
-
         if ($storage instanceof FileStorage) {
-            $xsltDom->load((string) $storage);
+            $xml = file_get_contents((string) $storage);
         } else {
-            $xsltDom->loadXML($storage);
+            $xml = $storage;
         }
+
+        self::startLibXmlErrorHandler();
+        $xsltDom = new \DomDocument();
+        $xsltDom->validateOnParse = true;
+        if (false === $xsltDom->loadXML($xml,  LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
+            throw new \InvalidArgumentException(implode("\n", self::getLibXmlErrors()));
+        }
+        self::stopLibXmlErrorHandler();
 
         return $xsltDom;
     }
+
+    public function serializeParameters($parameters)
+    {
+        $serializer = SerializerBuilder::create()
+            ->build();
+        $xml = $serializer->serialize($parameters, 'xml');
+
+        self::startLibXmlErrorHandler();
+        $dom = new \DOMDocument();
+        $dom->loadXML($xml);
+        if (false === $dom->loadXML($xml,  LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
+            throw new \InvalidArgumentException(implode("\n", self::getLibXmlErrors()));
+        }
+        self::stopLibXmlErrorHandler();
+
+        return $dom;
+    }
+
+    protected static function startLibXmlErrorHandler()
+    {
+        self::$internalErrors = libxml_use_internal_errors(true);
+        self::$disableEntities = libxml_disable_entity_loader(true);
+        libxml_clear_errors();
+    }
+
+    protected static function getLibXmlErrors()
+    {
+        $errors = array();
+        foreach (libxml_get_errors() as $error) {
+            $errors[] = sprintf('[%s %s] %s (in %s - line %d, column %d)',
+                LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
+                $error->code,
+                trim($error->message),
+                $error->file ? $error->file : 'n/a',
+                $error->line,
+                $error->column
+            );
+        }
+
+        libxml_clear_errors();
+        self::stopLibXmlErrorHandler();
+
+        return $errors;
+    }
+
+    protected static function stopLibXmlErrorHandler()
+    {
+        libxml_use_internal_errors(self::$internalErrors);
+        libxml_disable_entity_loader(self::$disableEntities);
+    }
+
 }

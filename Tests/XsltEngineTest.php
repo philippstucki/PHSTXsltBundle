@@ -7,6 +7,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Templating\Loader\LoaderInterface;
+use Symfony\Component\Templating\Storage;
+use Symfony\Component\Templating\Storage\StringStorage;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables;
 
@@ -49,10 +51,14 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    protected function getEngine($storage)
+    protected function getEngine($storage = null)
     {
         $loader = $this->getLoaderMock();
-        $parser = $this->getParserMock();
+        $parser = new TemplateNameParser();
+
+        if (null === $storage) {
+            $storage = $this->getStringStorageMock();
+        }
 
         $loader->expects($this->any())
             ->method('load')
@@ -81,6 +87,18 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $engine = new XsltEngine($parser, $loader);
 
         $this->assertFalse($engine->exists('BundleNS:ControllerNS:index.html.xsl'));
+    }
+
+    public function testRender()
+    {
+        $fileStorage = $this->getFileStorageMock();
+        $fileStorage->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue(self::$fixturesPath.'/xsl/xmloutput-basic.xsl'));
+        $engine = $this->getEngine($fileStorage);
+
+        $output = $engine->render('BundleNS:ControllerNS:index.html.xsl');
+        $this->assertEquals('<?xml version="1.0" encoding="utf-8"?>'.PHP_EOL.'<html><body>body text</body></html>', trim($output));
     }
 
     public function testRenderResponse()
@@ -152,6 +170,12 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $engine = $this->getEngine($stringStorage);
         $dom = $engine->load($template);
         $this->assertInstanceOf('\DomDocument', $dom, '->load() returns a DomDocument when loading from valid string');
+    }
+
+    public function testSerializeParameters()
+    {
+        $engine = $this->getEngine();
+        $this->assertInstanceOf('DOMDocument', $engine->serializeParameters(array()));
     }
 
 }
