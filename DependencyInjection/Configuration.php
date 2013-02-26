@@ -1,6 +1,6 @@
 <?php
 
-namespace PS\Bundle\XsltBundle\DependencyInjection;
+namespace PHST\Bundle\XsltBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

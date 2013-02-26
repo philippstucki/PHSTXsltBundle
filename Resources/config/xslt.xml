@@ -7,7 +7,7 @@
 >
 
     <parameters>
-        <parameter key="templating.engine.xslt.class">PS\Bundle\XsltBundle\XsltEngine</parameter>
+        <parameter key="templating.engine.xslt.class">PHST\Bundle\XsltBundle\XsltEngine</parameter>
     </parameters>
 
     <services>

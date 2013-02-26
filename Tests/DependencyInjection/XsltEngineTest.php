@@ -1,9 +1,9 @@
 <?php
 
 
-namespace PS\Bundle\XsltBundle\Tests\DependencyInjection;
+namespace PHST\Bundle\XsltBundle\Tests\DependencyInjection;
 
-use PS\Bundle\XsltBundle\DependencyInjection\XsltExtension;
+use PHST\Bundle\XsltBundle\DependencyInjection\XsltExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -22,7 +22,7 @@ class XsltExtensionTest extends \PHPUnit_Framework_TestCase
         $container->loadFromExtension('xslt', array());
         $this->compileContainer($container);
 
-        $this->assertEquals('PS\Bundle\XsltBundle\XsltEngine', $container->getParameter('templating.engine.xslt.class'), '->load() loads the xslt.xml file');
+        $this->assertEquals('PHST\Bundle\XsltBundle\XsltEngine', $container->getParameter('templating.engine.xslt.class'), '->load() loads the xslt.xml file');
     }
 
     private function createContainer()
@@ -32,7 +32,7 @@ class XsltExtensionTest extends \PHPUnit_Framework_TestCase
             'kernel.root_dir'  => __DIR__.'/Fixtures',
             'kernel.charset'   => 'UTF-8',
             'kernel.debug'     => false,
-            'kernel.bundles'   => array('XsltBundle' => 'PS\\Bundle\\XsltBundle\\XsltBundle'),
+            'kernel.bundles'   => array('XsltBundle' => 'PHST\\Bundle\\XsltBundle\\XsltBundle'),
         )));
 
         return $container;

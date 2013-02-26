@@ -1,8 +1,8 @@
 <?php
 
-namespace PS\Bundle\XsltBundle\Tests;
+namespace PHST\Bundle\XsltBundle\Tests;
 
-use PS\Bundle\XsltBundle\XsltEngine;
+use PHST\Bundle\XsltBundle\XsltEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\Component\Templating\TemplateNameParser;
@@ -103,7 +103,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
 
     public function testRenderResponse()
     {
-        $engine = $this->getMockBuilder('PS\Bundle\XsltBundle\XsltEngine')
+        $engine = $this->getMockBuilder('PHST\Bundle\XsltBundle\XsltEngine')
             ->setMethods(array('render'))
             ->disableOriginalConstructor()
             ->getMock();

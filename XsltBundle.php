@@ -1,6 +1,6 @@
 <?php
 
-namespace PS\Bundle\XsltBundle;
+namespace PHST\Bundle\XsltBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

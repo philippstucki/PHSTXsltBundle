@@ -1,6 +1,6 @@
 <?php
 
-namespace PS\Bundle\XsltBundle;
+namespace PHST\Bundle\XsltBundle;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;

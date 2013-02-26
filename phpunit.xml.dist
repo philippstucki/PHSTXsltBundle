@@ -18,7 +18,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="PS XSLT Bundle Test Suite">
+        <testsuite name="PHST XSLT Bundle Test Suite">
             <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
