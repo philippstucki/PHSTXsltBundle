@@ -19,7 +19,6 @@
 
         <service id="xslt.assetic.formula_loader.real" class="%xslt.assetic.formula_loader.class%" public="false">
             <tag name="assetic.templating.xslt" />
-            <argument type="service" id="templating.engine.xslt" />
         </service>
     </services>
 </container>
