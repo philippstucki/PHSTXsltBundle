@@ -4,7 +4,7 @@
     "description": "Adds XSLT as a symfony templating engine.",
     "keywords": ["templating", "xslt", "symfony"],
     "homepage": "https://github.com/philippstucki/PHSTXsltBundle",
-    "license": "MIT",
+    "license": "APACHE-2.0",
     "authors": [
         {
             "name": "Philipp Stucki",
