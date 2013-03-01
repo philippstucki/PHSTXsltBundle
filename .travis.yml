@@ -8,3 +8,6 @@ php:
 
 env:
     - SYMFONY_VERSION=v2.2.0
+
+before_script:
+    - composer --dev install
