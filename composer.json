@@ -33,5 +33,6 @@
     "autoload": {
         "psr-0": { "PHST\\Bundle\\XsltBundle": "" }
     },
+    "minimum-stability": "alpha",
     "target-dir": "PHST/Bundle/XsltBundle"
 }
