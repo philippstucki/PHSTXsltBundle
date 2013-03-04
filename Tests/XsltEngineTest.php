@@ -73,7 +73,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $parser = new TemplateNameParser();
         $engine = new XsltEngine($parser, $loader);
 
-        $this->assertTrue($engine->supports('BundleNS:ControllerNS:index.html.xsl'), '->supports() returns true when queried for xsl template');
+        $this->assertTrue($engine->supports('BundleNS:ControllerNS:index.html.xslt'), '->supports() returns true when queried for xslt template');
         $this->assertFalse($engine->supports('BundleNS:ControllerNS:index.html.twig'), '->supports() returns false when queried for other template');
     }
 
@@ -86,7 +86,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $parser = new TemplateNameParser();
         $engine = new XsltEngine($parser, $loader);
 
-        $this->assertFalse($engine->exists('BundleNS:ControllerNS:index.html.xsl'));
+        $this->assertFalse($engine->exists('BundleNS:ControllerNS:index.html.xslt'));
     }
 
     public function testRender()
@@ -94,10 +94,10 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $fileStorage = $this->getFileStorageMock();
         $fileStorage->expects($this->once())
             ->method('__toString')
-            ->will($this->returnValue(self::$fixturesPath.'/xsl/xmloutput-basic.xsl'));
+            ->will($this->returnValue(self::$fixturesPath.'/xsl/xmloutput-basic.xslt'));
         $engine = $this->getEngine($fileStorage);
 
-        $output = $engine->render('BundleNS:ControllerNS:index.html.xsl');
+        $output = $engine->render('BundleNS:ControllerNS:index.html.xslt');
         $this->assertEquals('<?xml version="1.0" encoding="utf-8"?>'.PHP_EOL.'<html><body>body text</body></html>', trim($output));
     }
 
@@ -112,7 +112,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
             ->method('render')
             ->will($this->returnValue('Rendered Response'));
 
-        $response = $engine->renderResponse('BundleNS:ControllerNS:index.html.xsl');
+        $response = $engine->renderResponse('BundleNS:ControllerNS:index.html.xslt');
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response, '->renderResponse() creates a Response instance if none has been passed');
         $this->assertEquals('Rendered Response', $response->getContent());
     }
@@ -123,7 +123,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $fileStorage = $this->getFileStorageMock();
         $fileStorage->expects($this->once())
             ->method('__toString')
-            ->will($this->returnValue(self::$fixturesPath.'/xsl/invalid.xsl'));
+            ->will($this->returnValue(self::$fixturesPath.'/xsl/invalid.xslt'));
         $engine = $this->getEngine($fileStorage);
 
         $this->setExpectedException('InvalidArgumentException');
@@ -151,7 +151,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $fileStorage = $this->getFileStorageMock();
         $fileStorage->expects($this->once())
             ->method('__toString')
-            ->will($this->returnValue(self::$fixturesPath.'/xsl/empty.xsl'));
+            ->will($this->returnValue(self::$fixturesPath.'/xsl/empty.xslt'));
 
         $engine = $this->getEngine($fileStorage);
         $dom = $engine->load($template);
@@ -165,7 +165,7 @@ class XsltEngineTest extends \PHPUnit_Framework_TestCase
         $stringStorage = $this->getStringStorageMock();
         $stringStorage->expects($this->once())
             ->method('__toString')
-            ->will($this->returnValue(file_get_contents(self::$fixturesPath.'/xsl/empty.xsl')));
+            ->will($this->returnValue(file_get_contents(self::$fixturesPath.'/xsl/empty.xslt')));
 
         $engine = $this->getEngine($stringStorage);
         $dom = $engine->load($template);
